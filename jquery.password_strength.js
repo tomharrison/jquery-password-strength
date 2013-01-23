@@ -24,7 +24,7 @@
  * @date 3/13/2009
  * @projectDescription Password Strength Meter is a jQuery plug-in provide you smart algorithm to detect a password strength. Based on Firas Kassem orginal plugin - http://phiras.wordpress.com/2007/04/08/password-strength-meter-a-jquery-plugin/
  * @version 1.0.1
- * 
+ *
  * @requires jquery.js (tested with 1.3.2)
  * @param shortPass:	"shortPass",	//optional
  * @param badPass:		"badPass",		//optional
@@ -33,7 +33,7 @@
  * @param baseStyle:	"testresult",	//optional
  * @param userid:		"",				//required override
  * @param messageloc:	1				//before == 0 or after == 1
- * 
+ *
  */
 
 (function($){ 
@@ -45,7 +45,7 @@
 	$.fn.resultStyle = "";
 
 	 $.fn.passStrength = function(options) {  
-		 var defaults = {
+		var defaults = {
 			shortPass: 		"shortPass",	//optional
 			badPass:		"badPass",		//optional
 			goodPass:		"goodPass",		//optional
@@ -55,13 +55,13 @@
 			messageloc:		1				//before == 0 or after == 1
 		};
 
-	 	var opts = $.extend(defaults, options);
+		var opts = $.extend(defaults, options);
 
-	 	return this.each(function() { 
-	 		 var obj = $(this);
+		return this.each(function() { 
+			 var obj = $(this);
 
-	 		$(obj).unbind().keyup(function()
-	 		{
+			$(obj).unbind().keyup(function()
+			{
 
 				var results = $.fn.teststrength($(this).val(),$(opts.userid).val(),opts);
 
