@@ -116,11 +116,13 @@
 		}
 
 		//password == user name
-		if (password.toLowerCase()==username.toLowerCase()) {
-			return {
-				className: this.options.baddPass,
-				description: $(this).samePassword
-			};
+		if (typeof username !== 'undefined') {
+			if (password.toLowerCase()==username.toLowerCase()) {
+				return {
+					className: this.options.baddPass,
+					description: $(this).samePassword
+				};
+			}
 		}
 
 		//password length
