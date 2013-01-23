@@ -83,7 +83,7 @@
 			var results = self.testStrength();
 			var span = '<span class="' + self.options.baseStyle + '"><span></span></span>';
 			
-			$(this).siblings('.' + self.options.baseStyle).remove();
+			self.clear();
 			if (self.options.messageloc === 1) {
 				$(this).after(span);
 			} else {
@@ -91,6 +91,11 @@
 			}
 			$(this).siblings('.' + self.options.baseStyle).addClass($(this).resultStyle).find('span').text(results);
 		});
+	};
+
+	// Clear the password strength indicator elements.
+	PasswordStrength.prototype.clear = function () {
+		$(this.element).siblings('.' + this.options.baseStyle).remove();
 	};
 
 	/**
