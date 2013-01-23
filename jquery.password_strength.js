@@ -90,7 +90,7 @@
 			} else {
 				$(this).before(span);
 			}
-			$(this).siblings('.' + self.options.baseStyle).addClass($(this).resultStyle).find('span').text(results);
+			$(this).siblings('.' + self.options.baseStyle).addClass(results.className).find('span').text(results.description);
 		});
 	};
 
@@ -109,14 +109,18 @@
 
 		//password < 4
 		if (password.length < 4) {
-			this.resultStyle =  this.options.shortPass;
-			return $(this).shortPass;
+			return {
+				className: this.options.shortPass,
+				description: $(this).shortPass
+			};
 		}
 
 		//password == user name
 		if (password.toLowerCase()==username.toLowerCase()) {
-			this.resultStyle = this.options.badPass;
-			return $(this).samePassword;
+			return {
+				className: this.options.baddPass,
+				description: $(this).samePassword
+			};
 		}
 
 		//password length
@@ -171,17 +175,23 @@
 		}
 
 		if (score < 34 ) {
-			this.resultStyle = this.options.badPass;
-			return $(this).badPass;
+			return {
+				className: this.options.badPass,
+				description: $(this).badPass
+			};
 		}
 
 		if (score < 68) {
-			this.resultStyle = this.options.goodPass;
-			return $(this).goodPass;
+			return {
+				className: this.options.goodPass,
+				description: $(this).goodPass
+			};
 		}
 
-		this.resultStyle = this.options.strongPass;
-		return $(this).strongPass;
+		return {
+			className: this.options.strongPass,
+			description: $(this).strongPass
+		};
 	};
 
 	$.fn[pluginName] = function(options) {
