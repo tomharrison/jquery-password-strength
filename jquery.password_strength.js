@@ -37,6 +37,18 @@
  */
 
 (function ($) { 
+	var pluginName = 'passStrength';
+
+	var defaults = {
+		shortPass: 		"shortPass",	//optional
+		badPass:		"badPass",		//optional
+		goodPass:		"goodPass",		//optional
+		strongPass:		"strongPass",	//optional
+		baseStyle:		"testresult",	//optional
+		userid:			"",				//required override
+		messageloc:		1				//before == 0 or after == 1
+	};
+
 	$.fn.shortPass = 'Too short';
 	$.fn.badPass = 'Weak';
 	$.fn.goodPass = 'Good';
@@ -44,119 +56,144 @@
 	$.fn.samePassword = 'Username and Password identical.';
 	$.fn.resultStyle = "";
 
-	 $.fn.passStrength = function(options) {
-		var defaults = {
-			shortPass: 		"shortPass",	//optional
-			badPass:		"badPass",		//optional
-			goodPass:		"goodPass",		//optional
-			strongPass:		"strongPass",	//optional
-			baseStyle:		"testresult",	//optional
-			userid:			"",				//required override
-			messageloc:		1				//before == 0 or after == 1
-		};
+	/**
+	 * Plugin constructor.
+	 *
+	 * Create a new instance of the plugin, and extend the default options with
+	 * the user's input. Keep references to the options, the current element, 
+	 * and anything else useful. Call the init function, which binds events.
+	 */
+	function PasswordStrength(element, options) {
+		this.element = element;
+		this.options = $.extend({}, defaults, options);
+		this._defaults = defaults;
+		this._name = pluginName;
+		this.init();
+	}
 
-		var opts = $.extend(defaults, options);
+	/**
+	 * Test password strength each time the value of the element changes.
+	 */
+	PasswordStrength.prototype.init = function () {
+		// To-do: namespace this handler so it can be unbound without affecting any other
+		// event handlers that may be on this element.
+		$(this.element).unbind().keyup(function () {
+			var self = $(this).data('plugin_' + pluginName);
+			var results = self.testStrength();
+			var span = '<span class="' + self.options.baseStyle + '"><span></span></span>';
+			
+			$(this).siblings('.' + self.options.baseStyle).remove();
+			if (self.options.messageloc === 1) {
+				$(this).after(span);
+			} else {
+				$(this).before(span);
+			}
+			$(this).siblings('.' + self.options.baseStyle).addClass($(this).resultStyle).find('span').text(results);
+		});
+	};
 
+	/**
+	 * Test the strength of the element's value.
+	 */
+	PasswordStrength.prototype.testStrength = function () {
+		var password = $(this.element).val();
+		var username = $(this.options.userid).val();
+		var score = 0;
+
+		//password < 4
+		if (password.length < 4) {
+			this.resultStyle =  this.options.shortPass;
+			return $(this).shortPass;
+		}
+
+		//password == user name
+		if (password.toLowerCase()==username.toLowerCase()) {
+			this.resultStyle = this.options.badPass;
+			return $(this).samePassword;
+		}
+
+		//password length
+		score += password.length * 4;
+		score += ( $.fn.checkRepetition(1,password).length - password.length ) * 1;
+		score += ( $.fn.checkRepetition(2,password).length - password.length ) * 1;
+		score += ( $.fn.checkRepetition(3,password).length - password.length ) * 1;
+		score += ( $.fn.checkRepetition(4,password).length - password.length ) * 1;
+
+		//password has 3 numbers
+		if (password.match(/(.*[0-9].*[0-9].*[0-9])/)) {
+			score += 5;
+		}
+
+		//password has 2 symbols
+		if (password.match(/(.*[!,@,#,$,%,^,&,*,?,_,~].*[!,@,#,$,%,^,&,*,?,_,~])/)) {
+			score += 5;
+		}
+
+		//password has Upper and Lower chars
+		if (password.match(/([a-z].*[A-Z])|([A-Z].*[a-z])/)) {
+			score += 10;
+		}
+
+		//password has number and chars
+		if (password.match(/([a-zA-Z])/) && password.match(/([0-9])/)) {
+			score += 15;
+		}
+
+		//password has number and symbol
+		if (password.match(/([!,@,#,$,%,^,&,*,?,_,~])/) && password.match(/([0-9])/)) {
+			score += 15;
+		}
+
+		//password has char and symbol
+		if (password.match(/([!,@,#,$,%,^,&,*,?,_,~])/) && password.match(/([a-zA-Z])/)) {
+			score += 15;
+		}
+
+		//password is just a numbers or chars
+		if (password.match(/^\w+$/) || password.match(/^\d+$/) ) {
+			score -= 10;
+		}
+
+		//verifying 0 < score < 100
+		if (score < 0) {
+			score = 0;
+		}
+
+		if (score > 100) {
+			score = 100;
+		}
+
+		if (score < 34 ) {
+			this.resultStyle = this.options.badPass;
+			return $(this).badPass;
+		}
+
+		if (score < 68) {
+			this.resultStyle = this.options.goodPass;
+			return $(this).goodPass;
+		}
+
+		this.resultStyle = this.options.strongPass;
+		return $(this).strongPass;
+	};
+
+	$.fn[pluginName] = function(options) {
 		return this.each(function() { 
-			 var obj = $(this);
+			var plugin = $.data(this, 'plugin_' + pluginName);
 
-			$(obj).unbind().keyup(function () {
-				var results = $.fn.teststrength($(this).val(), $(opts.userid).val(), opts);
+			if (typeof options === 'string' && plugin && typeof plugin[options] === 'function') {
+				return plugin[options]();
+			}
 
-				if (opts.messageloc === 1) {
-					$(this).next("." + opts.baseStyle).remove();
-					$(this).after("<span class=\""+opts.baseStyle+"\"><span></span></span>");
-					$(this).next("." + opts.baseStyle).addClass($(this).resultStyle).find("span").text(results);
-				} else {
-					$(this).prev("." + opts.baseStyle).remove();
-					$(this).before("<span class=\""+opts.baseStyle+"\"><span></span></span>");
-					$(this).prev("." + opts.baseStyle).addClass($(this).resultStyle).find("span").text(results);
-				}
-			});
-
-			// FUNCTIONS
-			$.fn.teststrength = function(password, username, option) {
-				var score = 0;
-
-				//password < 4
-				if (password.length < 4) {
-					this.resultStyle =  option.shortPass;
-					return $(this).shortPass;
-				}
-
-				//password == user name
-				if (password.toLowerCase()==username.toLowerCase()) {
-					this.resultStyle = option.badPass;
-					return $(this).samePassword;
-				}
-
-				//password length
-				score += password.length * 4;
-				score += ( $.fn.checkRepetition(1,password).length - password.length ) * 1;
-				score += ( $.fn.checkRepetition(2,password).length - password.length ) * 1;
-				score += ( $.fn.checkRepetition(3,password).length - password.length ) * 1;
-				score += ( $.fn.checkRepetition(4,password).length - password.length ) * 1;
-
-				//password has 3 numbers
-				if (password.match(/(.*[0-9].*[0-9].*[0-9])/)) {
-					score += 5;
-				}
-
-				//password has 2 symbols
-				if (password.match(/(.*[!,@,#,$,%,^,&,*,?,_,~].*[!,@,#,$,%,^,&,*,?,_,~])/)) {
-					score += 5;
-				}
-
-				//password has Upper and Lower chars
-				if (password.match(/([a-z].*[A-Z])|([A-Z].*[a-z])/)) {
-					score += 10;
-				}
-
-				//password has number and chars
-				if (password.match(/([a-zA-Z])/) && password.match(/([0-9])/)) {
-					score += 15;
-				}
-
-				//password has number and symbol
-				if (password.match(/([!,@,#,$,%,^,&,*,?,_,~])/) && password.match(/([0-9])/)) {
-					score += 15;
-				}
-
-				//password has char and symbol
-				if (password.match(/([!,@,#,$,%,^,&,*,?,_,~])/) && password.match(/([a-zA-Z])/)) {
-					score += 15;
-				}
-
-				//password is just a numbers or chars
-				if (password.match(/^\w+$/) || password.match(/^\d+$/) ) {
-					score -= 10;
-				}
-
-				//verifying 0 < score < 100
-				if (score < 0) {
-					score = 0;
-				}
-				if (score > 100) {
-					score = 100;
-				}
-
-				if (score < 34 ) {
-					this.resultStyle = option.badPass;
-					return $(this).badPass;
-				}
-				if (score < 68) {
-					this.resultStyle = option.goodPass;
-					return $(this).goodPass;
-				}
-
-				this.resultStyle = option.strongPass;
-				return $(this).strongPass;
-			};
+			if (!plugin) {
+				$.data(this, 'plugin_' + pluginName, new PasswordStrength(this, options));
+			}
 		});
 	};
 })(jQuery);
 
 
+// To-do: remove this from the $.fn namespace and move it inside the closure.
 $.fn.checkRepetition = function(pLen,str) {
 	var res = "";
 	for (var i=0; i<str.length ; i++ ) {
