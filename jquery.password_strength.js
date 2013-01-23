@@ -49,6 +49,7 @@
 		messageloc:		1				//before == 0 or after == 1
 	};
 
+	// To-do: move these out of the $.fn namespace.
 	$.fn.shortPass = 'Too short';
 	$.fn.badPass = 'Weak';
 	$.fn.goodPass = 'Good';
