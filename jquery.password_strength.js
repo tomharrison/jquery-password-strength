@@ -21,9 +21,10 @@
  * THE SOFTWARE.
  * 
  * @author Darren Mason (djmason9@gmail.com)
- * @date 3/13/2009
+ * @author Tom Harrison (tomharrison@gmail.com)
+ * @date 1/23/2013
  * @projectDescription Password Strength Meter is a jQuery plug-in provide you smart algorithm to detect a password strength. Based on Firas Kassem orginal plugin - http://phiras.wordpress.com/2007/04/08/password-strength-meter-a-jquery-plugin/
- * @version 1.0.1
+ * @version 2.0.0
  *
  * @requires jquery.js (tested with 1.3.2)
  * @param shortPass:	"shortPass",	//optional
