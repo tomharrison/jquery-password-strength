@@ -82,7 +82,13 @@
 	PasswordStrength.prototype.init = function () {
 		// To-do: namespace this handler so it can be unbound without affecting any other
 		// event handlers that may be on this element.
-		$(this.element).unbind().keyup(function () {
+		$(this.element).unbind().keyup(function (e) {
+			var code = e.keyCode || e.which;
+			if (code == '9') {
+				// Don't run the test when the user first tabs into the field.
+				return;
+			}
+
 			var self = $(this).data('plugin_' + pluginName);
 			var results = self.testStrength();
 			var span = '<span class="' + self.options.baseStyle + '"><span></span></span>';
