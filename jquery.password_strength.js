@@ -41,21 +41,26 @@
 	var pluginName = 'passStrength';
 
 	var defaults = {
-		shortPass: 		"shortPass",	//optional
-		badPass:		"badPass",		//optional
-		goodPass:		"goodPass",		//optional
-		strongPass:		"strongPass",	//optional
-		baseStyle:		"testresult",	//optional
-		userid:			"",				//required override
-		messageloc:		1				//before == 0 or after == 1
+		// CSS classes applied to the feedback element.
+		shortPass: "shortPass",
+		badPass: "badPass",
+		goodPass: "goodPass",
+		strongPass: "strongPass",
+		baseStyle: "testresult",
+		userid: "",
+
+		// Language to use when providing feedback.
+		shortPassTxt: 'Too short',
+		badPassTxt: 'Weak',
+		goodPassTxt: 'Good',
+		strongPassTxt: 'Strong',
+		samePassTxt: ' Username and password identical',
+
+		// Where to display the feedback. 0 = before the password
+		// input, 1 = after the element.
+		messageloc: 1
 	};
 
-	// To-do: move these out of the $.fn namespace.
-	$.fn.shortPass = 'Too short';
-	$.fn.badPass = 'Weak';
-	$.fn.goodPass = 'Good';
-	$.fn.strongPass = 'Strong';
-	$.fn.samePassword = 'Username and Password identical.';
 	$.fn.resultStyle = "";
 
 	/**
@@ -111,16 +116,16 @@
 		if (password.length < 4) {
 			return {
 				className: this.options.shortPass,
-				description: $(this).shortPass
+				description: this.options.shortPassTxt
 			};
 		}
 
 		//password == user name
 		if (typeof username !== 'undefined') {
-			if (password.toLowerCase()==username.toLowerCase()) {
+			if (password.toLowerCase() == username.toLowerCase()) {
 				return {
-					className: this.options.baddPass,
-					description: $(this).samePassword
+					className: this.options.badPass,
+					description: this.options.samePassTxt
 				};
 			}
 		}
@@ -179,20 +184,20 @@
 		if (score < 34 ) {
 			return {
 				className: this.options.badPass,
-				description: $(this).badPass
+				description: this.options.badPassTxt
 			};
 		}
 
 		if (score < 68) {
 			return {
 				className: this.options.goodPass,
-				description: $(this).goodPass
+				description: this.options.goodPassTxt
 			};
 		}
 
 		return {
 			className: this.options.strongPass,
-			description: $(this).strongPass
+			description: this.options.strongPassTxt
 		};
 	};
 
