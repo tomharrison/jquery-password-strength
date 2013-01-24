@@ -61,8 +61,6 @@
 		messageloc: 1
 	};
 
-	$.fn.resultStyle = "";
-
 	/**
 	 * Plugin constructor.
 	 *
