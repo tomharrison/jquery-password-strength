@@ -47,7 +47,7 @@
 		goodPass: "goodPass",
 		strongPass: "strongPass",
 		baseStyle: "testresult",
-		userid: "",
+		userid: null,
 
 		// Language to use when providing feedback.
 		shortPassTxt: 'Too short',
@@ -107,7 +107,6 @@
 	 */
 	PasswordStrength.prototype.testStrength = function () {
 		var password = $(this.element).val();
-		var username = $(this.options.userid).val();
 		var score = 0;
 
 		//password < 4
@@ -119,7 +118,9 @@
 		}
 
 		//password == user name
-		if (typeof username !== 'undefined') {
+		var unameSel = this.options.userid;
+		if (typeof unameSel === 'string' && unameSel.length > 0) {
+			var username = $(unameSel).val();
 			if (password.toLowerCase() == username.toLowerCase()) {
 				return {
 					className: this.options.badPass,
