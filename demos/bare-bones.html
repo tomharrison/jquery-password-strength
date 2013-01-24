@@ -1,0 +1,31 @@
+<!DOCTYPE html>
+<html lang="en" dir="ltr">
+<head>
+	<meta charset="utf-8" />
+	<meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1" />
+	<title>Bare Bones Demo of jQuery Password Strength Plugin</title>
+</head>
+<body>
+	<h1>Bare Bones Demo of jQuery Password Strength Plug-in</h1>
+	<form>
+		<fieldset>
+			<legend>Password Test</legend>
+			<p>
+				<label for="password">Password</label>
+				<input type="password" name="password" id="password" />
+			</p>
+			<p>
+				<input type="submit" value="Submit" />
+			</p>
+		</fieldset>
+	</form>
+	<script type="text/javascript" src="https://ajax.googleapis.com/ajax/libs/jquery/1.9.0/jquery.min.js"></script>
+	<script type="text/javascript" src="../jquery.password_strength.js"></script>
+	<script type="text/javascript">
+		$(document).ready(function () {
+			$('#password').passStrength();
+		});
+	</script>
+</body>
+
+</html>

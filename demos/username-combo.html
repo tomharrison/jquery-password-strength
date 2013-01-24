@@ -1,0 +1,40 @@
+<!DOCTYPE html>
+<html lang="en" dir="ltr">
+<head>
+	<meta charset="utf-8" />
+	<meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1" />
+	<title>Password Strength with Username Demonstration</title>
+</head>
+<body>
+	<h1>Password Strength with Username Demonstration</h1>
+	<p>
+		By giving a selctor to the form input field holding the username, the password strength algorithm can test whether the username and password are the same.
+	</p>
+	<form>
+		<fieldset>
+			<legend>Password Test</legend>
+			<p>
+				<label for="username">Username</label>
+				<input type="text" name="username" id="username" placeholder="Enter your username." />
+			</p>
+			<p>
+				<label for="password">Password</label>
+				<input type="password" name="password" id="password" />
+			</p>
+			<p>
+				<input type="submit" value="Submit" />
+			</p>
+		</fieldset>
+	</form>
+	<script type="text/javascript" src="https://ajax.googleapis.com/ajax/libs/jquery/1.9.0/jquery.min.js"></script>
+	<script type="text/javascript" src="../jquery.password_strength.js"></script>
+	<script type="text/javascript">
+		$(document).ready(function () {
+			$('#password').passStrength({
+				userid: '#username'
+			});
+		});
+	</script>
+</body>
+
+</html>
