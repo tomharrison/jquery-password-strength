@@ -61,6 +61,27 @@
 		messageloc: 1
 	};
 
+	var checkRepetition = function (pLen,str) {
+		var res = "";
+		for (var i=0; i<str.length ; i++) {
+			var repeated=true;
+
+			for (var j = 0; j < pLen && (j+i+pLen) < str.length; j++) {
+				repeated=repeated && (str.charAt(j+i)==str.charAt(j+i+pLen));
+			}
+			if (j<pLen) {
+				repeated=false;
+			}
+			if (repeated) {
+				i+=pLen-1;
+				repeated=false;
+			} else {
+				res+=str.charAt(i);
+			}
+		}
+		return res;
+	};
+
 	/**
 	 * Plugin constructor.
 	 *
@@ -137,10 +158,10 @@
 
 		//password length
 		score += password.length * 4;
-		score += ( $.fn.checkRepetition(1,password).length - password.length ) * 1;
-		score += ( $.fn.checkRepetition(2,password).length - password.length ) * 1;
-		score += ( $.fn.checkRepetition(3,password).length - password.length ) * 1;
-		score += ( $.fn.checkRepetition(4,password).length - password.length ) * 1;
+		score += (checkRepetition(1,password).length - password.length) * 1;
+		score += (checkRepetition(2,password).length - password.length) * 1;
+		score += (checkRepetition(3,password).length - password.length) * 1;
+		score += (checkRepetition(4,password).length - password.length) * 1;
 
 		//password has 3 numbers
 		if (password.match(/(.*[0-9].*[0-9].*[0-9])/)) {
@@ -220,26 +241,3 @@
 		});
 	};
 })(jQuery);
-
-
-// To-do: remove this from the $.fn namespace and move it inside the closure.
-$.fn.checkRepetition = function(pLen,str) {
-	var res = "";
-	for (var i=0; i<str.length ; i++ ) {
-		var repeated=true;
-
-		for (var j=0;j < pLen && (j+i+pLen) < str.length;j++) {
-			repeated=repeated && (str.charAt(j+i)==str.charAt(j+i+pLen));
-		}
-		if (j<pLen) {
-			repeated=false;
-		}
-		if (repeated) {
-			i+=pLen-1;
-			repeated=false;
-		} else {
-			res+=str.charAt(i);
-		}
-	}
-	return res;
-};
